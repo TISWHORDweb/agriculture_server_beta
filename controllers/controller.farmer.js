@@ -2,6 +2,7 @@
 const Land = require('../models/model.land');
 const SoilTestRequest = require('../models/model.request');
 const { useAsync, errorHandle, utils } = require('../core');
+const { generateUniqueID } = require('../core/core.utils');
 
 // Create a new land
 exports.createLand = useAsync(async (req, res, next) => {
