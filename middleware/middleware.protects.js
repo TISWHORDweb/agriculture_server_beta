@@ -1,34 +1,48 @@
-/**
- * Slantapp code and properties {www.slantapp.io}
- */
-let {ModelUser} = require('../models');
-const {errorHandle} = require('../core');
+// middleware/authMiddleware.js
+const jwt = require('jsonwebtoken');
+const User = require('../models/model.user');
+const { errorHandle } = require('../core');
 
-//body safe state
-exports.bodyParser = (req, res, next) => {
-    if (!Object.keys(req.body).length > 0) throw new errorHandle("the document body is empty", 202);
-    else next();
+const authMiddleware = async (req, res, next) => {
+  try {
+    const token = req.header('Authorization').replace('Bearer ', '');
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    
+    const user = await User.findOne({ 
+      _id: decoded.userId, 
+      'tokens.token': token 
+    });
+
+    if (!user) {
+      throw new Error();
+    }
+
+    req.token = token;
+    req.user = user;
+    next();
+  } catch (error) {
+    res.status(401).send({ error: 'Please authenticate.' });
+  }
+};
+
+const roleMiddleware = (roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return res.status(403).send({ error: 'Access denied' });
+    }
+    next();
+  };
+};
+
+const bodyParser =  (req, res, next) => {
+    Promise.resolve().then(() => {
+        if (!Object.keys(req.body).length > 0) throw new errorHandle("the document body is empty", 202);
+        else next();
+    }).catch(next)
 }
 
-//admin body guard
-exports.adminBodyGuard = async (req, res, next) => {
-    const xToken = req.headers['x-token'];
-    if (typeof xToken == 'undefined') throw new errorHandle("Unauthorized Access, Use a valid token and try again", 401);
-    //check and decode confirm code validity
-    const isValid = await ModelUser.findOne({where: {token: xToken}});
-    if (isValid) {
-        if (isValid.whoIs === 1) next();
-        else throw new errorHandle("x-token is valid but is not authorized for this route, Use a valid token and try again", 401);
-    } else throw new errorHandle("Invalid x-token code or token, Use a valid token and try again", 401);
-}
-//user body guard
-exports.adminBodyGuard = async (req, res, next) => {
-    const xToken = req.headers['x-token'];
-    if (typeof xToken == 'undefined') throw new errorHandle("Unauthorized Access, Use a valid token and try again", 401);
-    //check and decode confirm code validity
-    const isValid = await ModelUser.findOne({where: {token: xToken}});
-    if (isValid) {
-        if (isValid.whoIs === 0) next() ;
-        else throw new errorHandle("x-token is valid but is not authorized for this route, Use a valid token and try again", 401);
-    } else throw new errorHandle("Invalid x-token code or token, Use a valid token and try again", 401);
-}
+module.exports = {
+  authMiddleware,
+  roleMiddleware,
+  bodyParser
+};

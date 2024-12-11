@@ -1,12 +1,21 @@
-/**
- * Slantapp code and properties {www.slantapp.io}
- */
-let express = require('express');
-let router = express.Router();
+const {authMiddleware} = require('../middleware/middleware.protects');
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
+const express = require('express');
+const router = express.Router();
+const CoreError = require('./../core/core.error');
+//load controller and utils
+const { fetchUser, updateUser} = require('./../controllers/controller.user');
+/**
+ * auth routes
+ */
+router.get('/user', authMiddleware, fetchUser);
+router.put('/user/edit', authMiddleware, updateUser);
+/**
+ * Export lastly
+ */
+router.all('/*', (req, res) => {
+    throw new CoreError(`route not found ${req.originalUrl} using ${req.method} method`, 404);
+})
+
 
 module.exports = router;

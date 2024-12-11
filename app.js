@@ -9,8 +9,8 @@ let logger = require('morgan');
 let errorHandler = require('./middleware/middleware.error');
 let {errorHandle} = require('./core');
 
-let indexRouter = require('./routes/index');
-let frontendRouter = require('./routes/route.front');
+let agentRouter = require('./routes/route.agent');
+let farmerRouter = require('./routes/route.farmer');
 let authRouter = require('./routes/route.auth');
 let usersRouter = require('./routes/route.user');
 let adminRouter = require('./routes/route.admin');
@@ -40,9 +40,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 /**
  * list of routes
  */
-app.use('/api/', indexRouter);
-app.use('/api/v1/front', frontendRouter);
 app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/agent', agentRouter);
+app.use('/api/v1/farmer', farmerRouter);
 app.use('/api/v1/user', usersRouter);
 app.use('/api/v1/admin', adminRouter);
 //after all route, show 404
