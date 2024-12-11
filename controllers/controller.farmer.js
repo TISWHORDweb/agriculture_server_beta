@@ -86,7 +86,6 @@ exports.GetLands = useAsync(async (req, res, next) => {
       const requests = await Land.find({ 
         farmer: req.user._id 
       })
-      .populate('farmer')
       .populate('soilTestRequests');
     
       res.json(utils.JParser("ok-response", !!requests, requests));
