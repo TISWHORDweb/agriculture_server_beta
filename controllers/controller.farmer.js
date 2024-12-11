@@ -34,7 +34,7 @@ exports.createSoilTest = useAsync(async (req, res, next) => {
       const testRequest = new SoilTestRequest({
         land: land._id,
         farmer: req.user._id,
-        uniqueID: generateUniqueID(land.state),
+        uniqueID: generateUniqueID(land.state?land.state:"nigeria"),
         ...req.body
       });
 
