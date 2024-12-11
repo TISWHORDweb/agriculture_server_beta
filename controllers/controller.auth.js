@@ -30,7 +30,8 @@ exports.authRegister = useAsync(async (req, res, next) => {
                 middleName: req.body.middleName,
                 contact: req.body.contact,
                 address: req.body.address
-            }
+            },
+            location: req.body.location
         });
 
         // Save user
@@ -71,7 +72,7 @@ exports.authLogin = useAsync(async (req, res, next) => {
         });
 
         if (!user) {
-            return res.status(401).send({ error: 'Invalid login credentials' });
+            return res.status(400).json(utils.JParser('Invalid email or password', !!user, user));
         }
 
         // Check password

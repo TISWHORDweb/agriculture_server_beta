@@ -14,7 +14,7 @@ exports.createLand = useAsync(async (req, res, next) => {
       
       res.json(utils.JParser("ok-response", !!land, land));
     } catch (error) {
-        throw new errorHandle(e.message, 500);
+        throw new errorHandle(error.message, 500);
     }
 });
 
@@ -45,7 +45,7 @@ exports.createSoilTest = useAsync(async (req, res, next) => {
 
       res.json(utils.JParser("ok-response", !!testRequest, testRequest));
     } catch (error) {
-        throw new errorHandle(e.message, 500);
+        throw new errorHandle(error.message, 500);
     }
 });
 
@@ -60,6 +60,21 @@ exports.TestRequest = useAsync(async (req, res, next) => {
     
       res.json(utils.JParser("ok-response", !!requests, requests));
     } catch (error) {
-        throw new errorHandle(e.message, 500);
+        throw new errorHandle(error.message, 500);
+    }
+});
+
+// Get all farmer lands
+exports.GetLands = useAsync(async (req, res, next) => {
+    try {
+      const requests = await Land.find({ 
+        farmer: req.user._id 
+      })
+      .populate('farmer')
+      .populate('soilTestRequests');
+    
+      res.json(utils.JParser("ok-response", !!requests, requests));
+    } catch (error) {
+        throw new errorHandle(error.message, 500);
     }
 });

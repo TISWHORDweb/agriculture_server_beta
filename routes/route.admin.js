@@ -8,7 +8,7 @@ let {testRequests,users,deleteUser,analytics} = require('../controllers/controll
 
 /* GET statistics data. */
 router.get('/users', useAsync(authMiddleware), useAsync(roleMiddleware(['admin'])), useAsync(users));
-router.get('/test-request', useAsync(authMiddleware), useAsync(roleMiddleware(['admin'])), useAsync(testRequests));
+router.get('/requests', useAsync(authMiddleware), useAsync(roleMiddleware(['admin'])), useAsync(testRequests));
 router.delete('/delete-user', useAsync(authMiddleware), useAsync(roleMiddleware(['admin'])), useAsync(deleteUser));
 router.get('/analytics', useAsync(authMiddleware), useAsync(roleMiddleware(['admin'])), useAsync(analytics));
 

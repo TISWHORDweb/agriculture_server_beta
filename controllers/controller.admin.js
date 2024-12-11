@@ -6,101 +6,101 @@ const { useAsync, errorHandle, utils } = require('../core');
 
 // Get all users by role
 exports.users = useAsync(async (req, res, next) => {
-        try {
-            const { role } = req.query;
-            const query = role ? { role } : {};
+    try {
+        const { role } = req.query;
+        const query = role ? { role } : {};
 
-            const users = await User.find(query)
-                .select('-password')
-                .sort({ createdAt: -1 });
+        const users = await User.find(query)
+            .select('-password')
+            .sort({ createdAt: -1 });
 
-            res.json(utils.JParser("ok-response", !!users, users));
-        } catch (error) {
-            throw new errorHandle(e.message, 500);
-        }
-    });
+        res.json(utils.JParser("ok-response", !!users, users));
+    } catch (error) {
+        throw new errorHandle(error.message, 500);
+    }
+});
 
 // Get all soil test requests with advanced filtering
 exports.testRequests = useAsync(async (req, res, next) => {
-        try {
-            const { status, fromDate, toDate } = req.query;
+    try {
+        const { status, fromDate, toDate } = req.query;
 
-            const query = {};
+        const query = {};
 
-            if (status) query.status = status;
-            if (fromDate || toDate) {
-                query.requestDate = {};
-                if (fromDate) query.requestDate.$gte = new Date(fromDate);
-                if (toDate) query.requestDate.$lte = new Date(toDate);
-            }
-
-            const requests = await SoilTestRequest.find(query)
-                .populate('farmer', 'profile email')
-                .populate('agent', 'profile email')
-                .populate('land', 'name location')
-                .sort({ requestDate: -1 });
-
-                res.json(utils.JParser("ok-response", !!requests, requests));
-        } catch (error) {
-            throw new errorHandle(e.message, 500);
+        if (status) query.status = status;
+        if (fromDate || toDate) {
+            query.requestDate = {};
+            if (fromDate) query.requestDate.$gte = new Date(fromDate);
+            if (toDate) query.requestDate.$lte = new Date(toDate);
         }
-    });
+
+        const requests = await SoilTestRequest.find(query)
+            .populate('farmer', 'profile email')
+            .populate('agent', 'profile email')
+            .populate('land', 'name location')
+            .sort({ requestDate: -1 });
+
+        res.json(utils.JParser("ok-response", !!requests, requests));
+    } catch (error) {
+        throw new errorHandle(error.message, 500);
+    }
+});
 
 // Delete a user
 exports.deleteUser = useAsync(async (req, res, next) => {
-        try {
-            const user = await User.findByIdAndDelete(req.params.userId);
+    try {
+        const user = await User.findByIdAndDelete(req.params.userId);
 
-            if (!user) {
-                return res.status(404).send({ error: 'User not found' });
-            }
-
-            // Optional: Clean up related data
-            await Land.deleteMany({ farmer: user._id });
-            await SoilTestRequest.deleteMany({
-                $or: [
-                    { farmer: user._id },
-                    { agent: user._id }
-                ]
-            });
-
-            res.json(utils.JParser("User and related data deleted successfully", true, []));
-        } catch (error) {
-            throw new errorHandle(e.message, 500);
+        if (!user) {
+            return res.status(404).send({ error: 'User not found' });
         }
-    });
+
+        // Optional: Clean up related data
+        await Land.deleteMany({ farmer: user._id });
+        await SoilTestRequest.deleteMany({
+            $or: [
+                { farmer: user._id },
+                { agent: user._id }
+            ]
+        });
+
+        res.json(utils.JParser("User and related data deleted successfully", true, []));
+    } catch (error) {
+        throw new errorHandle(error.message, 500);
+    }
+});
 
 // Get detailed analytics
 exports.analytics = useAsync(async (req, res, next) => {
-        try {
-            const [
-                totalUsers,
-                usersByRole,
-                totalLands,
-                totalRequests,
-                requestsByStatus
-            ] = await Promise.all([
-                User.countDocuments(),
-                User.aggregate([
-                    { $group: { _id: '$role', count: { $sum: 1 } } }
-                ]),
-                Land.countDocuments(),
-                SoilTestRequest.countDocuments(),
-                SoilTestRequest.aggregate([
-                    { $group: { _id: '$status', count: { $sum: 1 } } }
-                ])
-            ]);
-            res.json(utils.JParser("ok-response", true, {
-                totalUsers,
-                usersByRole,
-                totalLands,
-                totalRequests,
-                requestsByStatus
-            }));
-        } catch (error) {
-            throw new errorHandle(e.message, 500);
-        }
-    });
+    try {
+        const [
+            totalUsers,
+            usersByRole,
+            totalLands,
+            totalRequests,
+            requestsByStatus
+        ] = await Promise.all([
+            User.countDocuments(),
+            User.aggregate([
+                { $group: { _id: '$role', count: { $sum: 1 } } }
+            ]),
+            Land.countDocuments(),
+            SoilTestRequest.countDocuments(),
+            SoilTestRequest.aggregate([
+                { $group: { _id: '$status', count: { $sum: 1 } } }
+            ])
+        ]);
+        res.json(utils.JParser("ok-response", true, {
+            totalUsers,
+            usersByRole,
+            totalLands,
+            totalRequests,
+            requestsByStatus
+        }));
+    } catch (error) {
+        throw new errorHandle(error.message, 500);
+    }
+});
 
 // exports.adminStats = useAsync(async (req, res, next) => {
 //     try {
@@ -131,7 +131,7 @@ exports.analytics = useAsync(async (req, res, next) => {
 //             }
 //         }
 //         res.json(utils.JParser("ok-response", !!user, user));
-//     } catch (e) {
-//         throw new errorHandle(e.message, 202);
+//     } catch (error) {
+//         throw new errorHandle(error.message, 202);
 //     }
 // });
