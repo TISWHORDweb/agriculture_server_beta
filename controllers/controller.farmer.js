@@ -64,6 +64,21 @@ exports.TestRequest = useAsync(async (req, res, next) => {
     }
 });
 
+// Get all soil test requests for a farmer
+exports.SingleTestRequest = useAsync(async (req, res, next) => {
+    try {
+      const requests = await SoilTestRequest.find({ 
+        _id: req.params.id 
+      })
+      .populate('land')
+      .populate('agent', 'email profile');
+    
+      res.json(utils.JParser("ok-response", !!requests, requests));
+    } catch (error) {
+        throw new errorHandle(error.message, 500);
+    }
+});
+
 // Get all farmer lands
 exports.GetLands = useAsync(async (req, res, next) => {
     try {

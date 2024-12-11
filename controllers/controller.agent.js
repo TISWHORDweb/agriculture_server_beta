@@ -70,3 +70,17 @@ exports.submitSoilTestResult = useAsync(async (req, res, next) => {
         throw new errorHandle(e.message, 500);
     }
 });
+
+// Get all soil test requests for a farmer
+exports.SingleFarmerTestRequest = useAsync(async (req, res, next) => {
+    try {
+      const requests = await SoilTestRequest.find({ 
+        _id: req.params.requestId 
+      })
+      .populate('land')
+    
+      res.json(utils.JParser("ok-response", !!requests, requests));
+    } catch (error) {
+        throw new errorHandle(error.message, 500);
+    }
+});
