@@ -27,6 +27,13 @@ const SoilTestRequestSchema = new mongoose.Schema({
     ],
     default: 'pending'
   },
+  source: {
+    type: String,
+    default: 'FMAFS'
+  },
+  uniqueID: {
+    type: String,
+  },
   requestDate: {
     type: Date,
     default: Date.now
@@ -38,7 +45,18 @@ const SoilTestRequestSchema = new mongoose.Schema({
       'nutrient levels', 
       'organic matter', 
       'soil texture', 
-      'salinity', 
+      'nitrogen', 
+      'phosphorus', 
+      'potassium', 
+      'calcium', 
+      'magnetism', 
+      'iron', 
+      'manganese', 
+      'boron',
+      'copper',
+      'zinc',
+      'cec',
+      'organic ma',
       'heavy metals'
     ]
   }],
