@@ -20,13 +20,13 @@ exports.availableRequests = useAsync(async (req, res, next) => {
 });
 
 // Accept a soil test request
-exports.AcceptSoilTest = useAsync(async (req, res, next) => {
+exports.updateSoilTestStatus = useAsync(async (req, res, next) => {
     try {
         const request = await SoilTestRequest.findByIdAndUpdate(
             req.params.requestId,
             {
                 agent: req.user._id,
-                status: 'assigned'
+                status: req.params.status,
             },
             { new: true }
         );
@@ -78,6 +78,7 @@ exports.SingleFarmerTestRequest = useAsync(async (req, res, next) => {
         _id: req.params.requestId 
       })
       .populate('land')
+      .populate('farmer', 'email profile');
     
       res.json(utils.JParser("ok-response", !!requests, requests));
     } catch (error) {
