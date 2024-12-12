@@ -99,8 +99,7 @@ exports.farmerAnalytics = useAsync(async (req, res, next) => {
     try {
         const farmerId = req.user._id
 
-        const [pendingCount, completedCount, totalRequest] = await Promise.all([
-            SoilTestRequest.countDocuments({ farmer: farmerId, status: 'pending' }),
+        const [completedCount, totalRequest] = await Promise.all([
             SoilTestRequest.countDocuments({ farmer: farmerId, status: 'completed' }),
             SoilTestRequest.countDocuments({ farmer: farmerId }),
         ]);
@@ -109,11 +108,13 @@ exports.farmerAnalytics = useAsync(async (req, res, next) => {
             Land.countDocuments({ farmer: farmerId }),
         ]);
 
+        const request = await SoilTestRequest.find({ farmer: farmerId }).limit(3)
+
         const data = {
-            TotalPending: pendingCount,
             TotalCompleted: completedCount,
             TotalLand: LandCount,
-            TotalRequest: totalRequest
+            TotalRequest: totalRequest,
+            request
         };
 
         res.json(utils.JParser("ok-response", !!data, data));

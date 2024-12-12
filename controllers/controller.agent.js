@@ -15,7 +15,7 @@ exports.availableRequests = useAsync(async (req, res, next) => {
 
         res.json(utils.JParser("ok-response", !!requests, requests));
     } catch (error) {
-        throw new errorHandle(e.message, 500);
+        throw new errorHandle(error.message, 500);
     }
 });
 
@@ -31,7 +31,7 @@ exports.acceptedRequests = useAsync(async (req, res, next) => {
 
         res.json(utils.JParser("ok-response", !!requests, requests));
     } catch (error) {
-        throw new errorHandle(e.message, 500);
+        throw new errorHandle(error.message, 500);
     }
 });
 
@@ -53,7 +53,7 @@ exports.updateSoilTestStatus = useAsync(async (req, res, next) => {
 
         res.json(utils.JParser("ok-response", !!request, request));
     } catch (error) {
-        throw new errorHandle(e.message, 500);
+        throw new errorHandle(error.message, 500);
     }
 });
 
@@ -83,7 +83,7 @@ exports.submitSoilTestResult = useAsync(async (req, res, next) => {
 
         res.json(utils.JParser("ok-response", !!result, result));
     } catch (error) {
-        throw new errorHandle(e.message, 500);
+        throw new errorHandle(error.message, 500);
     }
 });
 
@@ -106,8 +106,7 @@ exports.agentAnalytics = useAsync(async (req, res, next) => {
     try {
         const agentId = req.user._id
 
-        const [pendingCount, completedCount, totalRequest] = await Promise.all([
-            SoilTestRequest.countDocuments({ agent: agentId, status: 'pending' }),
+        const [ completedCount, totalRequest] = await Promise.all([
             SoilTestRequest.countDocuments({ agent: agentId, status: 'completed' }),
             SoilTestRequest.countDocuments({ agent: agentId }),
         ]);
@@ -116,11 +115,13 @@ exports.agentAnalytics = useAsync(async (req, res, next) => {
             SoilTestResult.countDocuments({ agent: agentId }),
         ]);
 
+        const request = await SoilTestRequest.find({ farmer: farmerId }).limit(3)
+
         const data = {
-            TotalPending: pendingCount,
             TotalCompleted: completedCount,
             TotalRequest: totalRequest,
-            ResultCount: resultCount
+            ResultCount: resultCount,
+            request
         };
 
         res.json(utils.JParser("ok-response", !!data, data));
