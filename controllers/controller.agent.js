@@ -61,8 +61,7 @@ exports.updateSoilTestStatus = useAsync(async (req, res, next) => {
 exports.submitSoilTestResult = useAsync(async (req, res, next) => {
     try {
         const request = await SoilTestRequest.findOne({
-            _id: req.params.requestId,
-            agent: req.user._id
+            _id: req.params.requestId
         });
 
         if (!request) {
