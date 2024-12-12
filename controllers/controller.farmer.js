@@ -1,6 +1,7 @@
 // routes/farmerRoutes.js
 const Land = require('../models/model.land');
 const SoilTestRequest = require('../models/model.request');
+const SoilTestResult = require('../models/model.result');
 const { useAsync, errorHandle, utils } = require('../core');
 const { generateUniqueID } = require('../core/core.utils');
 
@@ -116,6 +117,27 @@ exports.farmerAnalytics = useAsync(async (req, res, next) => {
         };
 
         res.json(utils.JParser("ok-response", !!data, data));
+    } catch (error) {
+        throw new errorHandle(error.message, 500);
+    }
+});
+
+// Get single test result
+exports.SingleTestResult = useAsync(async (req, res, next) => {
+    try {
+        const requests = await SoilTestResult.findOne({
+            _id: req.params.id
+        })
+        .populate({
+            path: 'request',
+            populate: [
+              { path: 'land', model: 'Land' },
+              { path: 'farmer', model: 'User', select: 'name profile' } 
+            ]
+          })
+            .populate('agent', 'email profile');
+
+        res.json(utils.JParser("ok-response", !!requests, requests));
     } catch (error) {
         throw new errorHandle(error.message, 500);
     }
