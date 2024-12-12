@@ -85,3 +85,30 @@ exports.SingleFarmerTestRequest = useAsync(async (req, res, next) => {
         throw new errorHandle(error.message, 500);
     }
 });
+
+exports.agentAnalytics = useAsync(async (req, res, next) => {
+    try {
+        const agentId = req.user._id
+
+        const [pendingCount, completedCount, totalRequest] = await Promise.all([
+            SoilTestRequest.countDocuments({ agent: agentId, status: 'pending' }),
+            SoilTestRequest.countDocuments({ agent: agentId, status: 'completed' }),
+            SoilTestRequest.countDocuments({ agent: agentId }),
+        ]);
+
+        const [resultCount] = await Promise.all([
+            SoilTestResult.countDocuments({ agent: agentId }),
+        ]);
+
+        const data = {
+            TotalPending: pendingCount,
+            TotalCompleted: completedCount,
+            TotalRequest: totalRequest,
+            ResultCount: resultCount
+        };
+
+        res.json(utils.JParser("ok-response", !!data, data));
+    } catch (error) {
+        throw new errorHandle(error.message, 500);
+    }
+});
