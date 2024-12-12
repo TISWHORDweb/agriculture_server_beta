@@ -8,8 +8,8 @@ const { fetchUser, updateUser} = require('./../controllers/controller.user');
 /**
  * auth routes
  */
-router.get('/user', authMiddleware, fetchUser);
-router.put('/user/edit', authMiddleware, updateUser);
+router.get('/details', authMiddleware, fetchUser);
+router.put('/edit', authMiddleware, updateUser);
 /**
  * Export lastly
  */

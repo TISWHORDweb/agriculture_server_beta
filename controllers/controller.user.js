@@ -8,11 +8,6 @@ exports.fetchUser = useAsync(async (req, res, next) => {
         // Exclude password from the returned user object
         const user = await User.findById(req.user._id)
             .select('-password')
-            .populate({
-                path: 'lands',
-                model: 'Land',
-                select: 'name location totalArea currentCrop'
-            });
 
             res.json(utils.JParser("ok-response", !!user, user));
     } catch (error) {

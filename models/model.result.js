@@ -18,91 +18,74 @@ const SoilTestResultSchema = new mongoose.Schema({
     },
     results: {
         pH: {
-            value: Number,
-            interpretation: String
+            type: String,
         },
         nutrientLevels: {
-            value: Number,
-            interpretation: String
+            type: String,
         },
         organicMatter: {
-            value: Number,
-            interpretation: String
+            type: String,
         },
         nitrogen: {
-            value: Number,
-            interpretation: String
+            type: String,
         },
         phosphorus: {
-            value: Number,
-            interpretation: String
+            type: String,
         },
         potassium: {
-            value: Number,
-            interpretation: String
+            type: String,
         },
         calcium: {
-            value: Number,
-            interpretation: String
+            type: String,
         },
         magnetism: {
-            value: Number,
-            interpretation: String
+            type: String,
         },
         iron: {
-            value: Number,
-            interpretation: String
+            type: String,
         },
         manganese: {
-            value: Number,
-            interpretation: String
+            type: String,
         },
         boron: {
-            value: Number,
-            interpretation: String
+            type: String,
         },
         copper: {
-            value: Number,
-            interpretation: String
+            type: String,
         },
         zinc: {
-            value: Number,
-            interpretation: String
+            type: String,
         },
         cec: {
-            value: Number,
-            interpretation: String
+            type: String,
         },
         organicMa: {
-            value: Number,
-            interpretation: String
+            type: String,
         },
         heavyMetals: {
-            value: Number,
-            interpretation: String
+            type: String,
         },
         organicMatter: {
-            percentage: Number,
-            interpretation: String
+            type: String,
         },
         nutrients: {
             nitrogen: {
-                level: Number,
+                level: String,
                 interpretation: String
             },
             phosphorus: {
-                level: Number,
+                level: String,
                 interpretation: String
             },
             potassium: {
-                level: Number,
+                level: String,
                 interpretation: String
             }
         },
         soilTexture: {
-            sand: Number,
-            silt: Number,
-            clay: Number,
+            sand: String,
+            silt: String,
+            clay: String,
             textureClass: String
         },
         salinity: {

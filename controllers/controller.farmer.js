@@ -95,6 +95,20 @@ exports.GetLands = useAsync(async (req, res, next) => {
     }
 });
 
+exports.GetFarmerDetails = useAsync(async (req, res, next) => {
+    try {
+        const requests = await User.find({
+            farmer: req.user._id
+        })
+            .populate('soilTestRequests');
+
+        res.json(utils.JParser("ok-response", !!requests, requests));
+    } catch (error) {
+        throw new errorHandle(error.message, 500);
+    }
+});
+
+
 exports.farmerAnalytics = useAsync(async (req, res, next) => {
     try {
         const farmerId = req.user._id
