@@ -74,7 +74,7 @@ exports.submitSoilTestResult = useAsync(async (req, res, next) => {
 // Get all soil test requests for a farmer
 exports.SingleFarmerTestRequest = useAsync(async (req, res, next) => {
     try {
-      const requests = await SoilTestRequest.find({ 
+      const requests = await SoilTestRequest.findOne({ 
         _id: req.params.requestId 
       })
       .populate('land')
