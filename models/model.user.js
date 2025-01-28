@@ -29,7 +29,7 @@ const UserSchema = new mongoose.Schema({
     location: {
         state: {
             type: String,
-            required: true
+            required: false
         },
         address: String,
         ward: String,

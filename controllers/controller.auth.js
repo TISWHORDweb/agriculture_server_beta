@@ -79,7 +79,7 @@ exports.authLogin = useAsync(async (req, res, next) => {
         const isMatch = await user.comparePassword(req.body.password);
 
         if (!isMatch) {
-            return res.status(401).send({ error: 'Invalid login credentials' });
+            return res.status(400).json(utils.JParserd('Invalid login credentials', !!user, user ));
         }
 
         // Generate JWT token
@@ -110,21 +110,27 @@ exports.authLogin = useAsync(async (req, res, next) => {
 // Change Password
 exports.changePassword = useAsync(async (req, res, next) => {
     try {
-        const { currentPassword, newPassword } = req.body;
+        const { userId, currentPassword, newPassword } = req.body;
+        const user = await User.findOne({_id:userId}); 
+       
+        if (!user) {
+            return res.status(404).send({ error: 'User not found' });
+        }
 
-        // Verify current password
-        const isMatch = await req.user.comparePassword(currentPassword);
-
+        const isMatch = await user.comparePassword(currentPassword);
+        console.log(isMatch)
         if (!isMatch) {
             return res.status(400).send({ error: 'Current password is incorrect' });
         }
 
-        // Set new password
-        req.user.password = newPassword;
-        await req.user.save();
+
+        user.password = newPassword;
+        await user.save();
 
         res.send({ message: 'Password changed successfully' });
     } catch (error) {
-        throw new errorHandle(error.message, 500);
+        console.error(error);  // Log the error for debugging
+        return res.status(500).send({ error: error.message || 'Something went wrong' });
     }
 });
+

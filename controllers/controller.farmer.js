@@ -141,7 +141,7 @@ exports.farmerAnalytics = useAsync(async (req, res, next) => {
 exports.SingleTestResult = useAsync(async (req, res, next) => {
     try {
         const requests = await SoilTestResult.findOne({
-            _id: req.params.id
+            request: req.params.id
         })
         .populate({
             path: 'request',

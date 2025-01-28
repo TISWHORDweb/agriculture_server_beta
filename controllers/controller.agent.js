@@ -8,8 +8,8 @@ exports.availableRequests = useAsync(async (req, res, next) => {
 
     try {
         const requests = await SoilTestRequest.find({
-            status: 'pending'
-        })
+            status: { $in: ['pending', 'assigned'] }
+          })          
             .populate('land')
             .populate('farmer', 'email profile');
 
@@ -25,6 +25,22 @@ exports.acceptedRequests = useAsync(async (req, res, next) => {
     try {
         const requests = await SoilTestRequest.find({
             status: { $nin: ['pending'] }
+        })
+            .populate('land')
+            .populate('farmer', 'email profile');
+
+        res.json(utils.JParser("ok-response", !!requests, requests));
+    } catch (error) {
+        throw new errorHandle(error.message, 500);
+    }
+});
+
+exports.completedRequests = useAsync(async (req, res, next) => {
+
+    try {
+        const requests = await SoilTestRequest.find({
+            status: 'completed',
+            agent: req.user._id,
         })
             .populate('land')
             .populate('farmer', 'email profile');
@@ -114,7 +130,7 @@ exports.agentAnalytics = useAsync(async (req, res, next) => {
             SoilTestResult.countDocuments({ agent: agentId }),
         ]);
 
-        const request = await SoilTestRequest.find({ farmer: farmerId }).limit(3)
+        const request = await SoilTestRequest.find({ agent: agentId }).limit(3)
 
         const data = {
             TotalCompleted: completedCount,
@@ -133,7 +149,7 @@ exports.agentAnalytics = useAsync(async (req, res, next) => {
 exports.SingleResult = useAsync(async (req, res, next) => {
     try {
         const requests = await SoilTestResult.findOne({
-            _id: req.params.id
+            request: req.params.id
         })
         .populate({
             path: 'request',
