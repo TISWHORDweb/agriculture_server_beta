@@ -2,15 +2,13 @@
 const User = require('../models/model.user');
 const Land = require('../models/model.land');
 const SoilTestRequest = require('../models/model.request');
+const SoilTestResult = require('../models/model.result');
 const { useAsync, errorHandle, utils } = require('../core');
 
 // Get all users by role
 exports.users = useAsync(async (req, res, next) => {
     try {
-        const { role } = req.query;
-        const query = role ? { role } : {};
-
-        const users = await User.find(query)
+        const users = await User.find({role:req.params.role})
             .select('-password')
             .sort({ createdAt: -1 });
 
@@ -41,6 +39,27 @@ exports.testRequests = useAsync(async (req, res, next) => {
             .sort({ requestDate: -1 });
 
         res.json(utils.JParser("ok-response", !!requests, requests));
+    } catch (error) {
+        throw new errorHandle(error.message, 500);
+    }
+});
+
+
+exports.AllResult = useAsync(async (req, res, next) => {
+    try {
+        const requests = await SoilTestResult.find()
+        .populate({
+            path: 'request',
+            populate: [
+              { path: 'land', model: 'Land' },
+              { path: 'farmer', model: 'User', select: 'name profile' } 
+            ]
+          })
+          .populate('agent')
+
+        const recommendations = await CropFertilizerModel.find({ resultId: requests._id });
+
+        res.json(utils.JParser("ok-response", !!requests, {requests,recommendations}));
     } catch (error) {
         throw new errorHandle(error.message, 500);
     }

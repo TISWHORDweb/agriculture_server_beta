@@ -4,6 +4,7 @@ const SoilTestRequest = require('../models/model.request');
 const SoilTestResult = require('../models/model.result');
 const { useAsync, errorHandle, utils } = require('../core');
 const { generateUniqueID } = require('../core/core.utils');
+const CropFertilizerModel = require('../models/model.recomendation');
 
 // Create a new land
 exports.createLand = useAsync(async (req, res, next) => {
@@ -69,13 +70,21 @@ exports.TestRequest = useAsync(async (req, res, next) => {
 // Get all soil test requests for a farmer
 exports.SingleTestRequest = useAsync(async (req, res, next) => {
     try {
-        const requests = await SoilTestRequest.findOne({
-            _id: req.params.id
+        const requests = await SoilTestResult.findOne({
+            request: req.params.id
         })
-            .populate('land')
-            .populate('agent', 'email profile');
+        .populate({
+            path: 'request',
+            populate: [
+              { path: 'land', model: 'Land' },
+              { path: 'farmer', model: 'User', select: 'name profile' } 
+            ]
+          })
+          .populate('agent')
 
-        res.json(utils.JParser("ok-response", !!requests, requests));
+        const recommendations = await CropFertilizerModel.find({ resultId: requests._id });
+
+        res.json(utils.JParser("ok-response", !!requests, {requests,recommendations}));
     } catch (error) {
         throw new errorHandle(error.message, 500);
     }
@@ -95,10 +104,35 @@ exports.GetLands = useAsync(async (req, res, next) => {
     }
 });
 
+exports.GetAllLands = useAsync(async (req, res, next) => {
+    try {
+        const requests = await Land.find()
+            .populate('soilTestRequests');
+
+        res.json(utils.JParser("ok-response", !!requests, requests));
+    } catch (error) {
+        throw new errorHandle(error.message, 500);
+    }
+});
+
 exports.GetFarmerDetails = useAsync(async (req, res, next) => {
     try {
         const requests = await User.find({
             farmer: req.user._id
+        })
+            .populate('soilTestRequests');
+
+        res.json(utils.JParser("ok-response", !!requests, requests));
+    } catch (error) {
+        throw new errorHandle(error.message, 500);
+    }
+});
+
+
+exports.GetAllFarmer = useAsync(async (req, res, next) => {
+    try {
+        const requests = await User.find({
+            role: "farmer"
         })
             .populate('soilTestRequests');
 
