@@ -38,6 +38,11 @@ const LandSchema = new mongoose.Schema({
         type: String,
         enum: ['agricultural', 'pasture', 'orchard', 'other']
     },
+    ownership: {
+        type: String,
+        enum: ['rented', 'owner', 'other'],
+        default: 'owner'
+    },
     currentCrop: String,
     soilTestRequests: [{
         type: mongoose.Schema.Types.ObjectId,

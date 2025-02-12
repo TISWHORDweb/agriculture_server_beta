@@ -2,6 +2,7 @@
 const SoilTestRequest = require('../models/model.request');
 const SoilTestResult = require('../models/model.result');
 const { useAsync, errorHandle, utils } = require('../core');
+const CropFertilizerModel = require('../models/model.recomendation');
 
 // Get available soil test requests
 exports.availableRequests = useAsync(async (req, res, next) => {
@@ -158,8 +159,43 @@ exports.SingleResult = useAsync(async (req, res, next) => {
               { path: 'farmer', model: 'User', select: 'name profile' } 
             ]
           })
+          .populate('agent')
 
-        res.json(utils.JParser("ok-response", !!requests, requests));
+        const recommendations = await CropFertilizerModel.find({ resultId: requests._id });
+
+        res.json(utils.JParser("ok-response", !!requests, {requests,recommendations}));
+    } catch (error) {
+        throw new errorHandle(error.message, 500);
+    }
+});
+
+
+exports.createFertilizerRecommendations = useAsync(async (req, res, next) => {
+    try {
+        const recommendations = req.body; // Array of recommendations from the request body
+
+        // Bulk create the recommendations
+        const createdRecommendations = await CropFertilizerModel.insertMany(recommendations);
+
+        res.json(utils.JParser("ok-response", !!createdRecommendations, createdRecommendations));
+    } catch (error) {
+        throw new errorHandle(error.message, 500);
+    }
+});
+
+
+exports.getFertilizerRecommendationsByResultId = useAsync(async (req, res, next) => {
+    try {
+        const { resultId } = req.params; // Get the result ID from the params
+
+        // Find all recommendations associated with the result ID
+        const recommendations = await CropFertilizerModel.find({ result: resultId });
+
+        if (!recommendations || recommendations.length === 0) {
+            return res.status(404).send({ error: 'No recommendations found for this result ID' });
+        }
+
+        res.json(utils.JParser("ok-response", !!recommendations, recommendations));
     } catch (error) {
         throw new errorHandle(error.message, 500);
     }

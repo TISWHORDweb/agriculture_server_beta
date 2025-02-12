@@ -20,25 +20,16 @@ const SoilTestResultSchema = new mongoose.Schema({
         pH: {
             type: String,
         },
-        nutrientLevels: {
+        available: {
             type: String,
         },
-        organicMatter: {
-            type: String,
-        },
-        nitrogen: {
-            type: String,
-        },
-        phosphorus: {
-            type: String,
-        },
-        potassium: {
+        exchangeable: {
             type: String,
         },
         calcium: {
             type: String,
         },
-        magnetism: {
+        magnesium: {
             type: String,
         },
         iron: {
@@ -59,38 +50,23 @@ const SoilTestResultSchema = new mongoose.Schema({
         cec: {
             type: String,
         },
-        organicMa: {
-            type: String,
-        },
-        heavyMetals: {
+        totalNitrogen: {
             type: String,
         },
         organicMatter: {
             type: String,
         },
-        nutrients: {
-            nitrogen: {
-                level: String,
-                interpretation: String
-            },
-            phosphorus: {
-                level: String,
-                interpretation: String
-            },
-            potassium: {
-                level: String,
-                interpretation: String
-            }
+        cn: {
+            type: String,
         },
         soilTexture: {
-            sand: String,
-            silt: String,
-            clay: String,
-            textureClass: String
+            type: String,
         },
-        salinity: {
-            electricalConductivity: Number,
-            interpretation: String
+        comment: {
+            preplanting: String,
+            planting: String,
+            topDressUrea: String,
+            topDressMOP: String
         },
         recommendedCrops: [String],
         additionalRecommendations: String
