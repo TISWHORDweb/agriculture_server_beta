@@ -18,6 +18,19 @@ exports.users = useAsync(async (req, res, next) => {
     }
 });
 
+exports.GetUserDetails = useAsync(async (req, res, next) => {
+    try {
+        const requests = await User.findOne({
+            _id: req.user._id
+        })
+            .populate('soilTestRequests');
+
+        res.json(utils.JParser("ok-response", !!requests, requests));
+    } catch (error) {
+        throw new errorHandle(error.message, 500);
+    }
+});
+
 // Get all soil test requests with advanced filtering
 exports.testRequests = useAsync(async (req, res, next) => {
     try {
@@ -33,6 +46,21 @@ exports.testRequests = useAsync(async (req, res, next) => {
         }
 
         const requests = await SoilTestRequest.find(query)
+            .populate('farmer', 'profile email')
+            .populate('agent', 'profile email')
+            .populate('land', 'name location')
+            .sort({ requestDate: -1 });
+
+        res.json(utils.JParser("ok-response", !!requests, requests));
+    } catch (error) {
+        throw new errorHandle(error.message, 500);
+    }
+});
+
+exports.singleTestRequests = useAsync(async (req, res, next) => {
+    try {
+
+        const requests = await SoilTestRequest.findOne({_id: req.params.id})
             .populate('farmer', 'profile email')
             .populate('agent', 'profile email')
             .populate('land', 'name location')

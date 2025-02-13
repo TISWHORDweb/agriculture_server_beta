@@ -4,7 +4,7 @@ let {errorHandle, useAsync} = require('../core');
 //load middleware for admin
 let {authMiddleware, roleMiddleware} = require('../middleware/middleware.protects');
 //load controller for admin
-let {testRequests,users,deleteUser,analytics, AllResult} = require('../controllers/controller.admin');
+let {testRequests,users,deleteUser,analytics, AllResult, GetUserDetails, singleTestRequests} = require('../controllers/controller.admin');
 const { GetAllLands } = require('../controllers/controller.farmer');
 
 /* GET statistics data. */
@@ -14,6 +14,8 @@ router.get('/tests', useAsync(authMiddleware), useAsync(roleMiddleware(['admin']
 router.get('/lands', useAsync(authMiddleware), useAsync(roleMiddleware(['admin'])), useAsync(GetAllLands));
 router.delete('/delete-user', useAsync(authMiddleware), useAsync(roleMiddleware(['admin'])), useAsync(deleteUser));
 router.get('/analytics', useAsync(authMiddleware), useAsync(roleMiddleware(['admin'])), useAsync(analytics));
+router.get('/user/:id', useAsync(authMiddleware), useAsync(roleMiddleware(['admin'])), useAsync(GetUserDetails));
+router.get('/request/:id', useAsync(authMiddleware), useAsync(roleMiddleware(['admin'])), useAsync(singleTestRequests));
 
 
 module.exports = router;
