@@ -3,12 +3,13 @@ const User = require('../models/model.user');
 const Land = require('../models/model.land');
 const SoilTestRequest = require('../models/model.request');
 const SoilTestResult = require('../models/model.result');
+const SoilData = require('../models/model.tests');
 const { useAsync, errorHandle, utils } = require('../core');
 
 // Get all users by role
 exports.users = useAsync(async (req, res, next) => {
     try {
-        const users = await User.find({role:req.params.role})
+        const users = await User.find({ role: req.params.role })
             .select('-password')
             .sort({ createdAt: -1 });
 
@@ -60,7 +61,7 @@ exports.testRequests = useAsync(async (req, res, next) => {
 exports.singleTestRequests = useAsync(async (req, res, next) => {
     try {
 
-        const requests = await SoilTestRequest.findOne({_id: req.params.id})
+        const requests = await SoilTestRequest.findOne({ _id: req.params.id })
             .populate('farmer', 'profile email')
             .populate('agent', 'profile email')
             .populate('land', 'name location')
@@ -76,18 +77,18 @@ exports.singleTestRequests = useAsync(async (req, res, next) => {
 exports.AllResult = useAsync(async (req, res, next) => {
     try {
         const requests = await SoilTestResult.find()
-        .populate({
-            path: 'request',
-            populate: [
-              { path: 'land', model: 'Land' },
-              { path: 'farmer', model: 'User', select: 'name profile' } 
-            ]
-          })
-          .populate('agent')
+            .populate({
+                path: 'request',
+                populate: [
+                    { path: 'land', model: 'Land' },
+                    { path: 'farmer', model: 'User', select: 'name profile' }
+                ]
+            })
+            .populate('agent')
 
         const recommendations = await CropFertilizerModel.find({ resultId: requests._id });
 
-        res.json(utils.JParser("ok-response", !!requests, {requests,recommendations}));
+        res.json(utils.JParser("ok-response", !!requests, { requests, recommendations }));
     } catch (error) {
         throw new errorHandle(error.message, 500);
     }
@@ -148,6 +149,47 @@ exports.analytics = useAsync(async (req, res, next) => {
         throw new errorHandle(error.message, 500);
     }
 });
+
+exports.saveSoilData = useAsync(async (req, res, next) => {
+    try {
+        const { soilData } = req.body;
+        
+        if (!Array.isArray(soilData)) {
+            throw new Error('Invalid data format');
+        }
+
+        // Create the soil data records
+        const createdSoilData = await SoilData.create(soilData);
+        
+        res.json(utils.JParser("ok-response", true, createdSoilData));
+    } catch (error) {
+        throw new errorHandle(error.message, 500);
+    }
+});
+
+
+exports.getSoilData = useAsync(async (req, res, next) => {
+    try {
+        // Fetch all soil data from the database
+        const soilData = await SoilData.find();
+
+        res.json(utils.JParser("ok-response", !!soilData, soilData));
+    } catch (error) {
+        throw new errorHandle(error.message, 500);
+    }
+});
+
+exports.getSingleSoilData = useAsync(async (req, res, next) => {
+    try {
+        // Fetch all soil data from the database
+        const soilData = await SoilData.find({ _id: req.params.id });
+
+        res.json(utils.JParser("ok-response", !!soilData, soilData));
+    } catch (error) {
+        throw new errorHandle(error.message, 500);
+    }
+});
+
 
 // exports.adminStats = useAsync(async (req, res, next) => {
 //     try {
