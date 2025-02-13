@@ -77,7 +77,7 @@ exports.SingleTestRequest = useAsync(async (req, res, next) => {
             path: 'request',
             populate: [
               { path: 'land', model: 'Land' },
-              { path: 'farmer', model: 'User', select: 'name profile' } 
+              { path: 'farmer', model: 'User' } 
             ]
           })
           .populate('agent')
