@@ -16,9 +16,9 @@ router.delete('/delete-user', useAsync(authMiddleware), useAsync(roleMiddleware(
 router.get('/analytics', useAsync(authMiddleware), useAsync(roleMiddleware(['admin'])), useAsync(analytics));
 router.get('/user/:id', useAsync(authMiddleware), useAsync(roleMiddleware(['admin'])), useAsync(GetUserDetails));
 router.get('/request/:id', useAsync(authMiddleware), useAsync(roleMiddleware(['admin'])), useAsync(singleTestRequests));
-router.post('/test/data', useAsync(authMiddleware), useAsync(roleMiddleware(['admin'])), useAsync(saveSoilData));
-router.get('/test/all', useAsync(authMiddleware), useAsync(roleMiddleware(['admin'])), useAsync(getSoilData));
-router.get('/test/:id', useAsync(authMiddleware), useAsync(roleMiddleware(['admin'])), useAsync(getSingleSoilData));
+router.post('/test/data', useAsync(saveSoilData));
+router.get('/test/all', useAsync(getSoilData));
+router.get('/test/:id', useAsync(getSingleSoilData));
 
 
 module.exports = router;
