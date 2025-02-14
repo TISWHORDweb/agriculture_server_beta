@@ -22,9 +22,8 @@ exports.users = useAsync(async (req, res, next) => {
 exports.GetUserDetails = useAsync(async (req, res, next) => {
     try {
         const requests = await User.findOne({
-            _id: req.user._id
+            _id: req.params.id
         })
-            .populate('soilTestRequests');
 
         res.json(utils.JParser("ok-response", !!requests, requests));
     } catch (error) {
