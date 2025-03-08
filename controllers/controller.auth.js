@@ -2,6 +2,7 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/model.user');
 const { useAsync, errorHandle, utils } = require('../core');
+const { EmailNote } = require('../core/core.notify');
 
 // User Registration
 exports.authRegister = useAsync(async (req, res, next) => {
@@ -75,11 +76,16 @@ exports.authLogin = useAsync(async (req, res, next) => {
             return res.status(400).json(utils.JParser('Invalid email or password', !!user, user));
         }
 
+        const email= user.email;
+        const fullName = user.profile.firstName + " " + user.profile.lastName;
+        const subject = "Login Notification";
+        const body = `We noticed a recent login to your account ${new Date().toLocaleString()}, If this was you, no further action is required. If you did not initiate this login, please contact our support team immediately. `;
+
         // Check password
         const isMatch = await user.comparePassword(req.body.password);
 
         if (!isMatch) {
-            return res.status(400).json(utils.JParserd('Invalid login credentials', !!user, user ));
+            return res.status(400).json(utils.JParser('Invalid login credentials', !!user, user ));
         }
 
         // Generate JWT token
@@ -91,18 +97,20 @@ exports.authLogin = useAsync(async (req, res, next) => {
             process.env.JWT_SECRET,
             { expiresIn: process.env.JWT_EXPIRATION }
         );
-
+        EmailNote(email,fullName,body,subject)
         // Respond with user info and token
         res.json(utils.JParser("Welcome back", !!user, {
             user: {
                 id: user._id,
                 email: user.email,
                 role: user.role,
-                profile: user.profile
+                profile: user.profile,
+                status: user.status
             },
             token
         }));
     } catch (error) {
+        console.error(error);  // Log the error for debugging
         throw new errorHandle(error.message, 500);
     }
 });

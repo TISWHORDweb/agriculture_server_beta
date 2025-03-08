@@ -5,6 +5,7 @@ const SoilTestRequest = require('../models/model.request');
 const SoilTestResult = require('../models/model.result');
 const SoilData = require('../models/model.tests');
 const { useAsync, errorHandle, utils } = require('../core');
+const { EmailNote } = require('../core/core.notify');
 
 // Get all users by role
 exports.users = useAsync(async (req, res, next) => {
@@ -152,14 +153,14 @@ exports.analytics = useAsync(async (req, res, next) => {
 exports.saveSoilData = useAsync(async (req, res, next) => {
     try {
         const { soilData } = req.body;
-        
+
         if (!Array.isArray(soilData)) {
             throw new Error('Invalid data format');
         }
 
         // Create the soil data records
         const createdSoilData = await SoilData.create(soilData);
-        
+
         res.json(utils.JParser("ok-response", true, createdSoilData));
     } catch (error) {
         throw new errorHandle(error.message, 500);
@@ -223,3 +224,40 @@ exports.getSingleSoilData = useAsync(async (req, res, next) => {
 //         throw new errorHandle(error.message, 202);
 //     }
 // });
+
+exports.ApproveOrDeclineUser = useAsync(async (req, res, next) => {
+    try {
+        const { id } = req.params; // User ID
+        const { action } = req.body; // Action: 'approve' or 'decline'
+
+        // Validate the action
+        if (!['approve', 'decline'].includes(action)) {
+            throw new Error("Invalid action. Use 'approve' or 'decline'.");
+        }
+
+        // Find the user by ID
+        const user = await User.findOne({ _id: id });
+        if (!user) {
+            throw new Error("User not found.");
+        }
+        const email = user.email;
+        const fullName = user.profile.firstName + " " + user.profile.lastName;
+        const subject = "Your Account Has Been Approved";
+        const body = `We are pleased to inform you that your account has been successfully APPROVED. You can now access your dashboard and start using our platform, Approval Date: ${new Date().toLocaleString()}.`;
+
+        // Update the user's status based on the action
+        if (action === 'approve') {
+            user.status = 'approved'; // Assuming you have a 'status' field in your User model
+        } else if (action === 'decline') {
+            user.status = 'declined'; // Assuming you have a 'status' field in your User model
+        }
+        EmailNote(email, fullName, body, subject)
+        // Save the updated user
+        await user.save();
+
+        // Send the response
+        res.json(utils.JParser("ok-response", true, user));
+    } catch (error) {
+        throw new errorHandle(error.message, 500);
+    }
+});

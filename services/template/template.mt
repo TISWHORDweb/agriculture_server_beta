@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="x-apple-disable-message-reformatting">
-    <title></title>
+    <title>Email Template</title>
     
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,600" rel="stylesheet" type="text/css">
     <!-- Web Font / @font-face : BEGIN -->
@@ -24,8 +24,6 @@
     <!-- Web Font / @font-face : END -->
 
     <!-- CSS Reset : BEGIN -->
-    
-    
     <style>
         /* What it does: Remove spaces around the email design added by some email clients. */
         /* Beware: It can remove the padding / margin and add a background color to the compose a reply window. */
@@ -83,7 +81,6 @@
             border-radius: 1px;
         }
     </style>
-
 </head>
 
 <body width="100%" style="margin: 0; padding: 0 !important; mso-line-height-rule: exactly; background-color: #f5f6fa;">
@@ -95,8 +92,9 @@
                         <tbody>
                             <tr>
                                 <td style="box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol';padding:25px 0;text-align:center">
-                                    <a href="https://scriipo.com/" style="box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol';color:#3d4852;font-size:19px;font-weight:bold;text-decoration:none;display:inline-block" target="_blank" data-saferedirecturl="https://www.google.com/url?q=http:https://auxcrypto.biz/&amp;source=gmail&amp;ust=1659087797161000&amp;usg=AOvVaw2NKIPc7EkKakJSL9bEn8e6">
-                                        <img src="https://i.im.ge/2022/07/24/FDprF0.png" alt="Scriipo Logo" style="box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol';max-width:100%;border:none;width:150px">
+                                    <a href="#" style="box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol';color:#3d4852;font-size:19px;font-weight:bold;text-decoration:none;display:inline-block" target="_blank">
+                                        <!-- Replace the logo URL with your Soil logo -->
+                                        <img src="https://example.com/soil-logo.png" alt="Soil Logo" style="box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol';max-width:100%;border:none;width:150px">
                                     </a>
                                 </td>
                             </tr>
@@ -108,14 +106,7 @@
                                 <td style="padding: 30px 30px 20px">
                                     <p style="margin-bottom: 10px; font-size: large;"><strong>Hello {{name}}</strong>,</p>
                                     <p style="margin-bottom: 4px;">{{body}}</p>
-                                    <p style="margin-bottom: 10px;">
-                                        <a class="button" href="{{btnUrl}}">{{btnText}}</a>
-                                    </p>
-                                    <p style="margin-bottom: 10px;">
-                                        <span>Unable to click the button ?, use the link below</span><br/>
-                                        <a href="{{btnUrl}}">{{btnUrl}}</a>
-                                    </p>
-                                    <p style="margin-top: 25px; margin-bottom: 15px;">---- <br> Regards<br>Akamobi Judith</p>
+                                    <p style="margin-top: 25px; margin-bottom: 15px;">---- <br> Regards<br>Soil Team</p>
                                 </td>
                             </tr>
                         </tbody>
@@ -124,16 +115,18 @@
                         <tbody>
                             <tr>
                                 <td style="text-align:center;padding:25px 0 0;">
-                                    <p style="padding-top: 15px; font-size: 12px;"><img style="height: 20px" src="https://i.im.ge/2022/07/24/FDprF0.png" alt="logo"></p>
-                                    <p style="font-size: 13px; margin-top: 10px; margin-bottom: 10px">Copyright © 2022 Scriipo. All rights reserved.<br><a style="color: #8094ae; text-decoration:none;" href="https://scriipo.com">Scriipo Academy</a>.</p>
+                                    <p style="padding-top: 15px; font-size: 12px;">
+                                        <!-- Replace the logo URL with your Soil logo -->
+                                        <img style="height: 20px" src="https://example.com/soil-logo.png" alt="Soil Logo">
+                                    </p>
+                                    <p style="font-size: 13px; margin-top: 10px; margin-bottom: 10px">Copyright © 2023 Soil. All rights reserved.<br><a style="color: #8094ae; text-decoration:none;" href="#">Soil Website</a>.</p>
                                     <ul style="margin: 10px -4px 0;padding: 0;">
-                                        <li style="display: inline-block; list-style: none; padding: 4px;"><a style="display: inline-block; height: 30px; width:30px;border-radius: 50%; background-color: #ffffff" href="https://facebook.com/scriipo" target="_blank"><img style="width: 30px" src="https://i.im.ge/2022/07/24/FDEwB9.png" alt="brand"></a></li>
-                                        <li style="display: inline-block; list-style: none; padding: 4px;"><a style="display: inline-block; height: 30px; width:30px;border-radius: 50%; background-color: #ffffff" href="https://instagram.com/scriipo" target="_blank"><img style="width: 30px" src="https://i.im.ge/2022/07/24/FDEmYK.png" alt="brand"></a></li>
-                                        <li style="display: inline-block; list-style: none; padding: 4px;"><a style="display: inline-block; height: 30px; width:30px;border-radius: 50%; background-color: #ffffff" href="https://twitter.com/scriipo" target="_blank"><img style="width: 30px" src="https://i.im.ge/2022/07/24/FDE9o6.png" alt="brand"></a></li>
-                                        <li style="display: inline-block; list-style: none; padding: 4px;"><a style="display: inline-block; height: 30px; width:30px;border-radius: 50%; background-color: #ffffff" href="https://www.linkedin.com/in/scriipo-limited-aa2815246" target="_blank"><img style="width: 30px" src="https://i.im.ge/2022/07/27/Fi1Aeq.png" alt="brand"></a></li>
-                                        <li style="display: none; list-style: none; padding: 4px;"><a style="display: inline-block; height: 30px; width:30px;border-radius: 50%; background-color: #ffffff" href="#" target="_blank"><img style="width: 30px" src="https://i.im.ge/2022/07/24/FDEjhF.png" alt="brand"></a></li>
+                                        <li style="display: inline-block; list-style: none; padding: 4px;"><a style="display: inline-block; height: 30px; width:30px;border-radius: 50%; background-color: #ffffff" href="#" target="_blank"><img style="width: 30px" src="https://example.com/facebook-icon.png" alt="Facebook"></a></li>
+                                        <li style="display: inline-block; list-style: none; padding: 4px;"><a style="display: inline-block; height: 30px; width:30px;border-radius: 50%; background-color: #ffffff" href="#" target="_blank"><img style="width: 30px" src="https://example.com/instagram-icon.png" alt="Instagram"></a></li>
+                                        <li style="display: inline-block; list-style: none; padding: 4px;"><a style="display: inline-block; height: 30px; width:30px;border-radius: 50%; background-color: #ffffff" href="#" target="_blank"><img style="width: 30px" src="https://example.com/twitter-icon.png" alt="Twitter"></a></li>
+                                        <li style="display: inline-block; list-style: none; padding: 4px;"><a style="display: inline-block; height: 30px; width:30px;border-radius: 50%; background-color: #ffffff" href="#" target="_blank"><img style="width: 30px" src="https://example.com/linkedin-icon.png" alt="LinkedIn"></a></li>
                                     </ul>
-                                    <p style="padding-top: 15px; font-size: 10px;"><a style="color: #8094ae; text-decoration:none;" href="https://slantapp.com">SlantApp &#8482; Technologies</a></p>
+                                    <p style="padding-top: 15px; font-size: 10px;"><a style="color: #8094ae; text-decoration:none;" href="#">Powered by Soil</a></p>
                                 </td>
                             </tr>
                         </tbody>
