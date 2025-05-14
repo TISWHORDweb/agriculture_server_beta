@@ -28,7 +28,8 @@ const UserSchema = new mongoose.Schema({
         lastName: String,
         contact: String,
         middleName: String,
-        address: String
+        address: String,
+        nin: String
     },
     location: {
         state: {

@@ -30,7 +30,8 @@ exports.authRegister = useAsync(async (req, res, next) => {
                 lastName: req.body.lastName,
                 middleName: req.body.middleName,
                 contact: req.body.contact,
-                address: req.body.address
+                address: req.body.address,
+                nin: req.body.nin
             },
             location: req.body.location
         });
