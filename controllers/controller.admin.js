@@ -240,6 +240,7 @@ exports.ApproveOrDeclineUser = useAsync(async (req, res, next) => {
         if (!user) {
             throw new Error("User not found.");
         }
+        
         const email = user.email;
         const fullName = user.profile.firstName + " " + user.profile.lastName;
         const subject = "Your Account Has Been Approved";
@@ -247,9 +248,9 @@ exports.ApproveOrDeclineUser = useAsync(async (req, res, next) => {
 
         // Update the user's status based on the action
         if (action === 'approve') {
-            user.status = 'approved'; // Assuming you have a 'status' field in your User model
+            user.status = true; // Assuming you have a 'status' field in your User model
         } else if (action === 'decline') {
-            user.status = 'declined'; // Assuming you have a 'status' field in your User model
+            user.status = false; // Assuming you have a 'status' field in your User model
         }
         EmailNote(email, fullName, body, subject)
         // Save the updated user

@@ -161,6 +161,8 @@ exports.SingleResult = useAsync(async (req, res, next) => {
           })
           .populate('agent')
 
+          console.log(requests)
+
         const recommendations = await CropFertilizerModel.find({ resultId: requests._id });
 
         res.json(utils.JParser("ok-response", !!requests, {requests,recommendations}));
