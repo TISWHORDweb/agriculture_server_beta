@@ -44,6 +44,9 @@ const UserSchema = new mongoose.Schema({
             longitude: Number
         }
     },
+      image: {
+        type: String
+    },
     createdAt: {
         type: Date,
         default: Date.now

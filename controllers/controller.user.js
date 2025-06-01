@@ -8,7 +8,7 @@ exports.fetchUser = useAsync(async (req, res, next) => {
         // Exclude password from the returned user object
         const user = await User.findById(req.user._id)
             .select('-password')
-
+User.updateMany({"status": true}, {"$set": { "image": "" }})  
             res.json(utils.JParser("ok-response", !!user, user));
     } catch (error) {
         throw new errorHandle(e.message, 500);
@@ -50,5 +50,25 @@ exports.updateUser = useAsync(async (req, res, next) => {
         });
     } catch (error) {
         throw new errorHandle(e.message, 500);
+    }
+});
+
+exports.updateImage = useAsync(async (req, res, next) => {
+    try {
+        const request = await User.findByIdAndUpdate(
+            req.user._id,
+            {
+                image: req.body.image,
+            },
+            { new: true }
+        );
+
+        if (!request) {
+            return res.status(404).send({ error: 'Request not found' });
+        }
+
+        res.json(utils.JParser("Profile pics updated successfully", !!request, request));
+    } catch (error) {
+        throw new errorHandle(error.message, 500);
     }
 });

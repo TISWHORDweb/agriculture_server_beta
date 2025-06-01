@@ -1,6 +1,7 @@
 // routes/agentRoutes.js
 const SoilTestRequest = require('../models/model.request');
 const SoilTestResult = require('../models/model.result');
+const User = require('../models/model.user');
 const { useAsync, errorHandle, utils } = require('../core');
 const CropFertilizerModel = require('../models/model.recomendation');
 
@@ -120,28 +121,87 @@ exports.SingleFarmerTestRequest = useAsync(async (req, res, next) => {
 
 exports.agentAnalytics = useAsync(async (req, res, next) => {
     try {
-        const agentId = req.user._id
+        const agentId = req.user._id;
 
-        const [ completedCount, totalRequest] = await Promise.all([
+        // Fetch counts in parallel
+        const [completedCount, pendingCount, inProgressCount, totalRequest, assignedFarmersCount] = await Promise.all([
             SoilTestRequest.countDocuments({ agent: agentId, status: 'completed' }),
+            SoilTestRequest.countDocuments({ agent: agentId, status: 'pending' }),
+            SoilTestRequest.countDocuments({ agent: agentId, status: 'in-progress' }),
             SoilTestRequest.countDocuments({ agent: agentId }),
+            User.countDocuments({ assignedAgent: agentId, role: 'farmer' })
         ]);
 
-        const [resultCount] = await Promise.all([
-            SoilTestResult.countDocuments({ agent: agentId }),
-        ]);
+        // Fetch recent requests with detailed population
+        const recentRequests = await SoilTestRequest.find({ agent: agentId })
+            .sort({ createdAt: -1 })
+            .limit(3)
+            .populate({
+                path: 'farmer',
+                select: 'profile firstName lastName email'
+            })
+            .populate({
+                path: 'land',
+                select: 'name image totalArea location currentCrop',
+                populate: {
+                    path: 'location',
+                    select: 'address state lga ward coordinates'
+                }
+            });
 
-        const request = await SoilTestRequest.find({ agent: agentId }).limit(3)
-
+        // Format the response data with proper null checks
         const data = {
-            TotalCompleted: completedCount,
-            TotalRequest: totalRequest,
-            ResultCount: resultCount,
-            request
+            TotalCompleted: completedCount || 0,
+            TotalPending: pendingCount || 0,
+            TotalInProgress: inProgressCount || 0,
+            TotalAssignedFarmers: assignedFarmersCount || 0,
+            TotalRequest: totalRequest || 0,
+            RecentRequests: recentRequests.map(request => ({
+                _id: request._id,
+                status: request.status || 'unknown',
+                source: request.source || 'unknown',
+                uniqueID: request.uniqueID || '',
+                desiredTestComponents: request.desiredTestComponents || [],
+                additionalNotes: request.additionalNotes || '',
+                requestDate: request.requestDate || new Date(),
+                createdAt: request.createdAt || new Date(),
+                farmer: {
+                    _id: request.farmer?._id || '',
+                    firstName: request.farmer?.firstName || '',
+                    lastName: request.farmer?.lastName || '',
+                    email: request.farmer?.email || '',
+                    profile: {
+                        ...(request.farmer?.profile || {}),
+                        contact: request.farmer?.profile?.contact || '',
+                        image: request.farmer?.profile?.image || ''
+                    }
+                },
+                land: {
+                    _id: request.land?._id || '',
+                    name: request.land?.name || 'Unnamed Land',
+                    image: request.land?.image || null,
+                    currentCrop: request.land?.currentCrop || 'Not specified',
+                    totalArea: {
+                        value: request.land?.totalArea?.value || 0,
+                        unit: request.land?.totalArea?.unit || 'acres'
+                    },
+                    location: {
+                        address: request.land?.location?.address || 'Address not specified',
+                        state: request.land?.location?.state || '',
+                        lga: request.land?.location?.lga || '',
+                        ward: request.land?.location?.ward || '',
+                        coordinates: {
+                            latitude: request.land?.location?.coordinates?.latitude || 0,
+                            longitude: request.land?.location?.coordinates?.longitude || 0
+                        }
+                    }
+                }
+            }))
         };
 
-        res.json(utils.JParser("ok-response", !!data, data));
+        res.json(utils.JParser("ok-response", true, data));
     } catch (error) {
+        console.error('Agent analytics error:', error);
         throw new errorHandle(error.message, 500);
     }
 });

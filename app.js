@@ -49,6 +49,8 @@ app.use('/api/v1/admin', adminRouter);
 app.use('*', (req, res)=>{
   throw new errorHandle("Resource not found", 404);
 })
+
+
 //Add custom error handling controller
 app.use(errorHandler);
 // catch 404 and forward to error handler

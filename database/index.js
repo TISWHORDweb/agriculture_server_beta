@@ -39,6 +39,7 @@
 
 // database.ts
 const mongoose = require('mongoose');
+const User = require('../models/model.user');
 
 const MONGO_URL = process.env.MONGO_DB_URL || ""; 
 
@@ -50,5 +51,21 @@ const connectDatabase = () => {
             console.error('Failed to connect to MongoDB', err);
         });
 };
+
+// async function addImageFieldToUsers() {
+//     try {
+//         const result = await User.updateMany(
+//             { image: { $exists: false } },
+//             { $set: { image: '' } } // or a default URL
+//         );
+//         console.log(`Updated ${result.modifiedCount} users`);
+//     } catch (err) {
+//         console.error(err);
+//     } finally {
+//         mongoose.connection.close();
+//     }
+// }
+
+// addImageFieldToUsers();
 
 module.exports = connectDatabase;
