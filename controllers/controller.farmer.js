@@ -107,7 +107,7 @@ exports.GetLands = useAsync(async (req, res, next) => {
 exports.GetSingleLand = useAsync(async (req, res, next) => {
     try {
         const requests = await Land.findOne({
-            _id: req.parems.id
+            _id: req.params.id
         })
             .populate('soilTestRequests');
 
