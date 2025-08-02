@@ -127,7 +127,7 @@ exports.changePassword = useAsync(async (req, res, next) => {
         }
 
         const isMatch = await user.comparePassword(currentPassword);
-        console.log(isMatch)
+        
         if (!isMatch) {
             return res.status(400).send({ error: 'Current password is incorrect' });
         }

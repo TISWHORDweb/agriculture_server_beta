@@ -5,7 +5,7 @@ let {errorHandle, useAsync} = require('../core');
 let {authMiddleware, roleMiddleware} = require('../middleware/middleware.protects');
 //load controller for admin
 let {testRequests,users,deleteUser,analytics, AllResult, GetUserDetails, singleTestRequests, saveSoilData, getSoilData, getSingleSoilData, ApproveOrDeclineUser} = require('../controllers/controller.admin');
-const { GetAllLands } = require('../controllers/controller.farmer');
+const { GetAllLands, GetSingleLand } = require('../controllers/controller.farmer');
 
 /* GET statistics data. */
 router.get('/users/:role', useAsync(authMiddleware), useAsync(roleMiddleware(['admin'])), useAsync(users));
@@ -17,6 +17,7 @@ router.delete('/delete-user', useAsync(authMiddleware), useAsync(roleMiddleware(
 router.get('/analytics', useAsync(authMiddleware), useAsync(roleMiddleware(['admin'])), useAsync(analytics));
 router.get('/user/:id', useAsync(authMiddleware), useAsync(roleMiddleware(['admin'])), useAsync(GetUserDetails));
 router.get('/request/:id', useAsync(authMiddleware), useAsync(roleMiddleware(['admin'])), useAsync(singleTestRequests));
+router.get('/land/:id', useAsync(authMiddleware), useAsync(GetSingleLand));
 router.post('/test/data', useAsync(saveSoilData));
 router.get('/test/all', useAsync(getSoilData));
 router.get('/test/:id', useAsync(getSingleSoilData));

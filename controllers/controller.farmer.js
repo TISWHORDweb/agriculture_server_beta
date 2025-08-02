@@ -104,6 +104,19 @@ exports.GetLands = useAsync(async (req, res, next) => {
     }
 });
 
+exports.GetSingleLand = useAsync(async (req, res, next) => {
+    try {
+        const requests = await Land.findOne({
+            _id: req.parems.id
+        })
+            .populate('soilTestRequests');
+
+        res.json(utils.JParser("ok-response", !!requests, requests));
+    } catch (error) {
+        throw new errorHandle(error.message, 500);
+    }
+});
+
 exports.GetAllLands = useAsync(async (req, res, next) => {
     try {
         const requests = await Land.find()
